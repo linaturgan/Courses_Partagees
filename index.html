@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nos Courses</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-1: #fff9c4;
+        --bg-2: #fce4ec;
+        --bg-3: #e8f5e9;
+        --accent: #ff6b6b;
+        --accent-2: #ff8e53;
+        --text: #2d3142;
+        --muted: #8d99ae;
+        --card: #ffffff;
+        --shadow: 0 14px 40px rgba(255, 107, 107, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Nunito", sans-serif;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 40%, var(--bg-3) 100%);
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .app {
+        min-height: 100vh;
+        padding-bottom: 120px;
+      }
+
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 20px 16px 16px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        border-radius: 0 0 28px 28px;
+        box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+      }
+
+      .header-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .title {
+        font-family: "Fredoka", sans-serif;
+        color: #fff;
+        font-size: 2rem;
+        line-height: 1.05;
+      }
+
+      .subtitle {
+        margin-top: 4px;
+        color: rgba(255, 255, 255, 0.88);
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .total-card {
+        min-width: 118px;
+        padding: 10px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        text-align: center;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+          "total";
+        gap: 10px;
+        width: min(100%, 220px);
+      }
+
+      .shop-secondary-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: 20px;
+        row-gap: 12px;
+        margin-top: 12px;
+        align-items: start;
+      }
+
+      .shop-secondary-grid .total-card {
+        min-width: 0;
+        width: 100%;
+      }
+
+      .total-label {
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.7rem;
+        font-weight: 800;
+      }
+
+      .total-value {
+        margin-top: 2px;
+        font-family: "Fredoka", sans-serif;
+        color: var(--accent);
+        font-size: 1.7rem;
+        line-height: 1;
+      }
+
+      .total-meta {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      .card-estimate .total-label,
+      .card-estimate .total-value {
+        color: #1f6feb;
+      }
+
+      .card-estimate {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .compact-estimate-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .compact-estimate-row .total-label,
+      .compact-estimate-row .total-value {
+        margin-top: 0;
+      }
+
+      .card-total {
+        grid-area: total;
+      }
+
+      .card-budget .total-label,
+      .card-budget .total-value {
+        color: #1f9d55;
+      }
+
+      .card-budget {
+        grid-area: budget;
+      }
+
+      .shop-secondary-grid .card-estimate,
+      .shop-secondary-grid .card-budget {
+        grid-area: auto;
+      }
+
+      .shop-secondary-grid .card-budget {
+        align-self: start;
+      }
+
+      .estimate-note {
+        margin-top: 6px;
+        color: #3868a6;
+        font-size: 0.78rem;
+        font-weight: 700;
+        line-height: 1.3;
+      }
+
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+        margin-top: 14px;
+        padding: 4px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .mode-btn {
+        border: 0;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .mode-btn.active {
+        background: #fff;
+        color: var(--accent);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      }
+
+      .content {
+        padding: 16px 14px 0;
+      }
+
+      .empty-state {
+        margin-top: 18px;
+        padding: 64px 20px;
+        text-align: center;
+        color: #bababa;
+      }
+
+      .empty-state .icon {
+        font-size: 4rem;
+      }
+
+      .empty-state .headline {
+        margin-top: 8px;
+        font-family: "Fredoka", sans-serif;
+        font-size: 1.6rem;
+        color: #d3d3d3;
+      }
+
+      .sync-pill {
+        display: inline-flex;
+        align-items: center;
+        margin-top: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.28);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .category {
+        margin-bottom: 18px;
+      }
+
+      .category-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        padding-left: 4px;
+      }
+
+      .category-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+      }
+
+      .category-name {
+        font-family: "Fredoka", sans-serif;
+        font-size: 0.98rem;
+      }
+
+      .category-count {
+        margin-left: auto;
+        padding: 2px 8px;
+        border-radius: 999px;
+        color: #fff;
+        font-size: 0.72rem;
+        font-weight: 800;
+      }
+
+      .items-card {
+        overflow: hidden;
+        border-radius: 22px;
+        background: var(--card);
+      }
+
+      .item-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .item-main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .item-name {
+        font-size: 1rem;
+        font-weight: 800;
+        word-break: break-word;
+      }
+
+      .item-name.checked {
+        color: #9a9a9a;
+      }
+
+      .item-details {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      .desc-input {
+        width: 100%;
+        margin-top: 8px;
+        padding: 10px 12px;
+        border: 2px solid #f0f0f0;
+        border-radius: 12px;
+        background: #fafafa;
+        resize: vertical;
+        min-height: 68px;
+        color: var(--text);
+        font-size: 0.92rem;
+        line-height: 1.35;
+      }
+
+      .item-description {
+        margin-top: 8px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.04);
+        color: #5d6474;
+        font-size: 0.88rem;
+        font-weight: 700;
+        line-height: 1.35;
+        white-space: pre-wrap;
+      }
+
+      .check-btn,
+      .delete-btn,
+      .small-btn,
+      .fab,
+      .primary-btn,
+      .secondary-btn,
+      .qty-btn {
+        cursor: pointer;
+      }
+
+      .check-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2.5px solid currentColor;
+        background: transparent;
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+      }
+
+      .check-btn.checked {
+        border: none;
+        color: #fff;
+      }
+
+      .delete-btn {
+        border: 0;
+        background: transparent;
+        color: #d0d0d0;
+        font-size: 1.15rem;
+        padding: 0 4px;
+      }
+
+      .shop-controls,
+      .list-controls {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .list-controls {
+        grid-template-columns: auto auto;
+      }
+
+      .qty-group {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.05);
+        padding: 2px;
+      }
+
+      .qty-btn {
+        width: 28px;
+        height: 28px;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        font-size: 1rem;
+        font-weight: 800;
+      }
+
+      .qty-value {
+        min-width: 28px;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      .price-input {
+        width: 80px;
+        padding: 8px 10px;
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        border-radius: 12px;
+        text-align: right;
+        font-weight: 800;
+        background: #fff;
+      }
+
+      .line-total {
+        min-width: 74px;
+        text-align: right;
+        font-family: "Fredoka", sans-serif;
+        font-size: 0.95rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        flex: 1;
+        padding: 13px 14px;
+        border-radius: 16px;
+        font-weight: 800;
+        border: 0;
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #fff;
+        box-shadow: var(--shadow);
+      }
+
+      .secondary-btn {
+        background: transparent;
+        border: 2px dashed #ffc3c3;
+        color: var(--accent);
+      }
+
+      .fab {
+        position: fixed;
+        right: 22px;
+        bottom: 28px;
+        z-index: 15;
+        width: 62px;
+        height: 62px;
+        border: 0;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: #fff;
+        font-size: 2rem;
+        box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: none;
+        align-items: flex-end;
+        background: rgba(0, 0, 0, 0.45);
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal {
+        width: 100%;
+        padding: 24px 20px 40px;
+        border-radius: 28px 28px 0 0;
+        background: #fff;
+        box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.22);
+      }
+
+      .handle {
+        width: 40px;
+        height: 5px;
+        margin: 0 auto 20px;
+        border-radius: 999px;
+        background: #ececec;
+      }
+
+      .modal-title {
+        margin-bottom: 18px;
+        text-align: center;
+        font-family: "Fredoka", sans-serif;
+        font-size: 1.35rem;
+      }
+
+      .field,
+      .category-select {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 16px;
+        border: 2px solid #f0f0f0;
+        background: #fafafa;
+        margin-bottom: 12px;
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .category-option {
+        padding: 8px 4px;
+        border-radius: 14px;
+        border: 2px solid #f0f0f0;
+        background: #fafafa;
+        text-align: center;
+        font-size: 0.8rem;
+      }
+
+      .category-option.active {
+        font-weight: 800;
+      }
+
+      .banner {
+        margin: 14px 0 4px;
+        padding: 10px 12px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.8);
+        color: #d45353;
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+
+      @media (max-width: 720px) {
+        .summary-grid {
+          grid-template-columns: minmax(118px, 1fr);
+          grid-template-areas:
+            "total";
+        }
+
+        .shop-secondary-grid {
+          grid-template-columns: minmax(0, 1fr) minmax(118px, 180px);
+        }
+
+        .shop-controls,
+        .list-controls {
+          grid-template-columns: 1fr;
+          justify-items: end;
+        }
+
+        .line-total {
+          min-width: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+      import {
+        getDatabase,
+        onValue,
+        push,
+        ref,
+        remove,
+        serverTimestamp,
+        set,
+        update
+      } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDlrQAmG5iyaezZoqKuLTaTa12BxE6zQ4g",
+        authDomain: "courses-partagees-fb009.firebaseapp.com",
+        databaseURL: "https://courses-partagees-fb009-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "courses-partagees-fb009",
+        storageBucket: "courses-partagees-fb009.firebasestorage.app",
+        messagingSenderId: "759723345924",
+        appId: "1:759723345924:web:1949e52c14675b7a238d51"
+      };
+
+      const CATEGORIES = [
+        { id: "fruits", label: "🍎 Fruits & Légumes", color: "#4CAF50", light: "#E8F5E9" },
+        { id: "frais", label: "🧀 Produits Frais", color: "#2196F3", light: "#E3F2FD" },
+        { id: "epicerie", label: "🥫 Épicerie", color: "#FF9800", light: "#FFF3E0" },
+        { id: "boulangerie", label: "🥖 Boulangerie", color: "#795548", light: "#EFEBE9" },
+        { id: "boissons", label: "🧃 Boissons", color: "#9C27B0", light: "#F3E5F5" },
+        { id: "hygiene", label: "🧴 Hygiène", color: "#00BCD4", light: "#E0F7FA" },
+        { id: "surgeles", label: "🧊 Surgelés", color: "#3F51B5", light: "#E8EAF6" },
+        { id: "textile", label: "👕 Textile", color: "#E91E63", light: "#FCE4EC" },
+        { id: "autre", label: "🛒 Autre", color: "#607D8B", light: "#ECEFF1" }
+      ];
+
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const listRef = ref(database, "shared-list");
+      const itemsRef = ref(database, "shared-list/items");
+      const metaRef = ref(database, "shared-list/meta");
+      const root = document.getElementById("app");
+
+      const state = {
+        mode: "list",
+        items: [],
+        budget: 0,
+        showAddPanel: false,
+        newItem: "",
+        newCategory: "epicerie",
+        syncStatus: "Connexion à Firebase...",
+        connected: false,
+        lastBudgetAlertKey: ""
+      };
+
+      const euro = new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "EUR"
+      });
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function findCategory(id) {
+        return CATEGORIES.find((category) => category.id === id) || CATEGORIES[CATEGORIES.length - 1];
+      }
+
+      function normalizeItem(id, item) {
+        return {
+          id,
+          name: item.name || "",
+          category: item.category || "autre",
+          checked: Boolean(item.checked),
+          selected: typeof item.selected === "boolean" ? item.selected : Boolean(item.checked),
+          quantity: Number.isFinite(item.quantity) && item.quantity > 0 ? Math.floor(item.quantity) : 1,
+          price: typeof item.price === "number" && !Number.isNaN(item.price) ? item.price : null,
+          description: item.description || "",
+          updatedAt: item.updatedAt || 0
+        };
+      }
+
+      function getItemsByCategory(sourceItems) {
+        return CATEGORIES.map((category) => ({
+          ...category,
+          items: sourceItems.filter((item) => item.category === category.id)
+        })).filter((category) => category.items.length > 0);
+      }
+
+      function hasActiveBudget() {
+        return typeof state.budget === "number" && state.budget > 0;
+      }
+
+      function getEstimatedTotal() {
+        return state.items
+          .filter((item) => item.selected && typeof item.price === "number")
+          .reduce((sum, item) => sum + item.price * item.quantity, 0);
+      }
+
+      function getTotalPrice() {
+        return state.items
+          .filter((item) => item.selected && item.checked && typeof item.price === "number")
+          .reduce((sum, item) => sum + item.price * item.quantity, 0);
+      }
+
+      function render() {
+        const selectedCount = state.items.filter((item) => item.selected).length;
+        const checkedCount = state.items.filter((item) => item.selected && item.checked).length;
+        const missingPriceCount = state.items.filter((item) => item.selected && typeof item.price !== "number").length;
+        const estimatedTotal = getEstimatedTotal();
+        const totalPrice = getTotalPrice();
+        const listCategories = getItemsByCategory(state.items);
+        const shopCategories = getItemsByCategory(state.items.filter((item) => item.selected));
+        const categories = state.mode === "shop" ? shopCategories : listCategories;
+        const overBudget = hasActiveBudget() && estimatedTotal > state.budget;
+        const budgetDiff = overBudget ? estimatedTotal - state.budget : 0;
+        const subtitle =
+          state.mode === "shop"
+            ? selectedCount === 0
+              ? "Aucun article en courses"
+              : `${selectedCount} article${selectedCount > 1 ? "s" : ""} en courses`
+            : state.items.length === 0
+              ? "Liste vide"
+              : `${state.items.length} produit${state.items.length > 1 ? "s" : ""} en mémoire • ${selectedCount} sélectionné${selectedCount > 1 ? "s" : ""}`;
+
+        root.innerHTML = `
+          <div class="app">
+            <header class="header">
+              <div class="header-top">
+                <div>
+                  <div class="title">🛍️ Nos Courses</div>
+                  <div class="subtitle">${subtitle}</div>
+                </div>
+                ${
+                  state.mode === "shop"
+                    ? `
+                      <div class="summary-grid">
+                        <div class="total-card card-total">
+                          <div class="total-label">Total</div>
+                          <div class="total-value">${escapeHtml(euro.format(totalPrice))}</div>
+                          <div class="total-meta">${checkedCount} acheté${checkedCount > 1 ? "s" : ""}</div>
+                        </div>
+                      </div>
+                    `
+                    : ``
+                }
+              </div>
+              ${
+                state.mode === "shop"
+                  ? `
+                    <div class="shop-secondary-grid">
+                      <div class="total-card card-estimate">
+                        <div class="total-label">Estimation du total</div>
+                        <div class="total-value">${escapeHtml(euro.format(estimatedTotal))}</div>
+                        <div class="total-meta">${selectedCount} prévu${selectedCount > 1 ? "s" : ""}</div>
+                      </div>
+                      <div class="total-card card-budget" style="${overBudget ? "border:2px solid #ff6b6b;" : ""}">
+                        <div class="total-label">Mon budget</div>
+                        <input
+                          class="price-input"
+                          style="width:100%;margin-top:6px;background:${overBudget ? "#fff4f4" : "#fff"};color:${overBudget ? "#d64545" : "var(--text)"}"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          inputmode="decimal"
+                          value="${typeof state.budget === "number" ? state.budget.toFixed(2) : "0.00"}"
+                          placeholder="0,00"
+                          data-action="budget-input"
+                        />
+                        <div class="total-meta">${hasActiveBudget() ? "Alerte si dépassé" : ""}</div>
+                      </div>
+                    </div>
+                  `
+                  : ""
+              }
+              <div class="mode-toggle">
+                <button class="mode-btn ${state.mode === "list" ? "active" : ""}" data-action="set-mode" data-mode="list">📝 Ma liste</button>
+                <button class="mode-btn ${state.mode === "shop" ? "active" : ""}" data-action="set-mode" data-mode="shop">🏪 En courses</button>
+              </div>
+              ${
+                state.mode === "list"
+                  ? `
+                    <div class="total-card card-estimate" style="margin-top:12px;">
+                      <div class="compact-estimate-row">
+                        <div class="total-label">Estimation du total</div>
+                        <div class="total-value">${escapeHtml(euro.format(estimatedTotal))}</div>
+                      </div>
+                      <div class="total-meta">${selectedCount} sélectionné${selectedCount > 1 ? "s" : ""}</div>
+                      ${
+                        missingPriceCount > 0
+                          ? `<div class="estimate-note">${missingPriceCount} article${missingPriceCount > 1 ? "s" : ""} non pris en compte dans l'estimation, faute d'information sur le prix.</div>`
+                          : ""
+                      }
+                    </div>
+                  `
+                  : ""
+              }
+              ${
+                state.mode === "shop" && overBudget
+                  ? `<div class="banner" style="margin-top:10px;background:rgba(255,80,80,0.22);">Budget dépassé de ${escapeHtml(euro.format(budgetDiff))}.</div>`
+                  : ""
+              }
+            </header>
+
+            <main class="content">
+              ${
+                state.mode === "list"
+                  ? `<div class="banner"><p style="text-align: center; margin: 0;">L'amour, c'est aussi partager sa liste de courses.</p></div>`
+                  : ""
+              }
+              ${
+                categories.length === 0
+                  ? `
+                    <div class="empty-state">
+                      <div class="icon">🛒</div>
+                      <div class="headline">${state.mode === "shop" ? "Aucune course en cours" : "Liste vide !"}</div>
+                      <div>${state.mode === "shop" ? "Sélectionne des produits depuis Ma liste" : "Appuie sur + pour ajouter des articles"}</div>
+                    </div>
+                  `
+                  : categories
+                      .map((category) => {
+                        return `
+                          <section class="category">
+                            <div class="category-header">
+                              <div class="category-dot" style="background:${category.color}"></div>
+                              <div class="category-name" style="color:${category.color}">${escapeHtml(category.label)}</div>
+                              <div class="category-count" style="background:${category.color}">${category.items.length}</div>
+                            </div>
+                            <div class="items-card" style="border:1.5px solid ${category.color}22;box-shadow:0 2px 16px ${category.color}22">
+                              ${category.items
+                                .map((item, index) => {
+                                  const lineTotal = typeof item.price === "number" ? item.price * item.quantity : null;
+                                  const isMarked = state.mode === "shop" ? item.checked : item.selected;
+                                  return `
+                                    <div class="item-row" style="background:${isMarked ? category.light : "#fff"};border-bottom:${
+                                      index < category.items.length - 1 ? `1px solid ${category.light}` : "none"
+                                    }">
+                                      <button
+                                        class="check-btn ${isMarked ? "checked" : ""}"
+                                        style="color:${category.color};background:${isMarked ? category.color : "transparent"}"
+                                        data-action="${state.mode === "shop" ? "toggle-bought" : "toggle-selected"}"
+                                        data-id="${item.id}"
+                                        aria-label="${state.mode === "shop" ? "Cocher" : "Sélectionner"} ${escapeHtml(item.name)}"
+                                      >${isMarked ? "✓" : ""}</button>
+                                      <div class="item-main">
+                                        <div class="item-name ${item.checked ? "checked" : ""}" style="${
+                                          state.mode === "shop" && item.checked ? "text-decoration:line-through;" : ""
+                                        }">${escapeHtml(item.name)}</div>
+                                        ${
+                                          state.mode === "list"
+                                            ? `
+                                              ${
+                                                typeof item.price === "number"
+                                                  ? `<div class="item-details">Prix mémorisé : ${escapeHtml(euro.format(item.price))}</div>`
+                                                  : ""
+                                              }
+                                              <textarea
+                                                class="desc-input"
+                                                rows="2"
+                                                placeholder="Ajouter un détail si besoin..."
+                                                data-action="description-input"
+                                                data-id="${item.id}"
+                                              >${escapeHtml(item.description || "")}</textarea>
+                                            `
+                                            : ""
+                                        }
+                                        ${
+                                          state.mode === "shop"
+                                            ? `
+                                              <div class="item-details">
+                                                ${typeof item.price === "number" ? `Prix unité : ${escapeHtml(euro.format(item.price))}` : "Ajoute un prix"}
+                                                • Quantité : ${item.quantity}
+                                              </div>
+                                              ${
+                                                item.description
+                                                  ? `<div class="item-description">${escapeHtml(item.description)}</div>`
+                                                  : ""
+                                              }
+                                            `
+                                            : ""
+                                        }
+                                      </div>
+                                      ${
+                                        state.mode === "shop"
+                                          ? `
+                                            <div class="shop-controls">
+                                              <div class="qty-group">
+                                                <button class="qty-btn" data-action="change-qty" data-id="${item.id}" data-delta="-1">−</button>
+                                                <div class="qty-value">${item.quantity}</div>
+                                                <button class="qty-btn" data-action="change-qty" data-id="${item.id}" data-delta="1">+</button>
+                                              </div>
+                                              <input
+                                                class="price-input"
+                                                type="number"
+                                                min="0"
+                                                step="0.01"
+                                                inputmode="decimal"
+                                                value="${typeof item.price === "number" ? item.price.toFixed(2) : ""}"
+                                                placeholder="0,00"
+                                                data-action="price-input"
+                                                data-id="${item.id}"
+                                              />
+                                              <div class="line-total" style="color:${category.color}">
+                                                ${lineTotal === null ? "0,00 €" : escapeHtml(euro.format(lineTotal))}
+                                              </div>
+                                            </div>
+                                          `
+                                          : `
+                                            <div class="list-controls">
+                                              <div class="qty-group">
+                                                <button class="qty-btn" data-action="change-qty" data-id="${item.id}" data-delta="-1">−</button>
+                                                <div class="qty-value">${item.quantity}</div>
+                                                <button class="qty-btn" data-action="change-qty" data-id="${item.id}" data-delta="1">+</button>
+                                              </div>
+                                              <button class="delete-btn" data-action="delete-item" data-id="${item.id}" aria-label="Supprimer ${escapeHtml(item.name)}">✕</button>
+                                            </div>
+                                          `
+                                      }
+                                    </div>
+                                  `;
+                                })
+                                .join("")}
+                            </div>
+                          </section>
+                        `;
+                      })
+                      .join("")
+              }
+
+              ${
+                state.items.length > 0
+                  ? `
+                    <div class="actions">
+                      ${
+                        state.mode === "list"
+                          ? ``
+                          : `
+                            <button class="secondary-btn" data-action="clear-bought" style="border-color:#cde7ff;color:#2176d2">🧹 Vider la liste des produits achetés</button>
+                            <button class="secondary-btn" data-action="reset-shop" style="border-color:#b3d9ff;color:#2196F3">🔄 Réinitialiser</button>
+                          `
+                      }
+                    </div>
+                  `
+                  : ""
+              }
+            </main>
+
+            ${
+              state.mode === "list"
+                ? `<button class="fab" data-action="open-add" aria-label="Ajouter un article">+</button>`
+                : ""
+            }
+
+            <div class="modal-backdrop ${state.showAddPanel ? "open" : ""}" data-action="close-add">
+              <div class="modal" data-stop-click="true">
+                <div class="handle"></div>
+                <div class="modal-title">Ajouter un article</div>
+                <input
+                  id="new-item-input"
+                  class="field"
+                  type="text"
+                  maxlength="80"
+                  placeholder="Nom de l'article..."
+                  value="${escapeHtml(state.newItem)}"
+                />
+                <div class="category-grid">
+                  ${CATEGORIES.map((category) => {
+                    const active = state.newCategory === category.id;
+                    const icon = category.label.split(" ")[0];
+                    const text = category.label.split(" ").slice(1).join(" ");
+                    return `
+                      <button
+                        class="category-option ${active ? "active" : ""}"
+                        style="border-color:${active ? category.color : "#f0f0f0"};background:${active ? category.light : "#fafafa"};color:${
+                      active ? category.color : "#939393"
+                    }"
+                        data-action="select-category"
+                        data-category="${category.id}"
+                      >
+                        <div style="font-size:1.25rem">${escapeHtml(icon)}</div>
+                        <div>${escapeHtml(text)}</div>
+                      </button>
+                    `;
+                  }).join("")}
+                </div>
+                <button class="primary-btn" data-action="submit-add">✚ Ajouter à la liste</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        bindEvents();
+
+        if (state.showAddPanel) {
+          const input = document.getElementById("new-item-input");
+          if (input) {
+            input.focus();
+            input.setSelectionRange(input.value.length, input.value.length);
+          }
+        }
+      }
+
+      function bindEvents() {
+        root.querySelectorAll("[data-action='set-mode']").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.mode = button.dataset.mode;
+            render();
+          });
+        });
+
+        root.querySelectorAll("[data-action='open-add']").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.showAddPanel = true;
+            render();
+          });
+        });
+
+        root.querySelectorAll("[data-action='close-add']").forEach((element) => {
+          element.addEventListener("click", (event) => {
+            if (event.target.dataset.stopClick === "true") {
+              return;
+            }
+            state.showAddPanel = false;
+            render();
+          });
+        });
+
+        root.querySelectorAll("[data-stop-click='true']").forEach((element) => {
+          element.addEventListener("click", (event) => event.stopPropagation());
+        });
+
+        const newItemInput = document.getElementById("new-item-input");
+        if (newItemInput) {
+          newItemInput.addEventListener("input", (event) => {
+            state.newItem = event.target.value;
+          });
+          newItemInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              addItem();
+            }
+          });
+        }
+
+        root.querySelectorAll("[data-action='select-category']").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.newCategory = button.dataset.category;
+            render();
+          });
+        });
+
+        root.querySelectorAll("[data-action='submit-add']").forEach((button) => {
+          button.addEventListener("click", addItem);
+        });
+
+        root.querySelectorAll("[data-action='toggle-selected']").forEach((button) => {
+          button.addEventListener("click", () => toggleSelected(button.dataset.id));
+        });
+
+        root.querySelectorAll("[data-action='toggle-bought']").forEach((button) => {
+          button.addEventListener("click", () => toggleBought(button.dataset.id));
+        });
+
+        root.querySelectorAll("[data-action='delete-item']").forEach((button) => {
+          button.addEventListener("click", () => deleteItem(button.dataset.id));
+        });
+
+        root.querySelectorAll("[data-action='change-qty']").forEach((button) => {
+          button.addEventListener("click", () => {
+            updateQuantity(button.dataset.id, Number(button.dataset.delta));
+          });
+        });
+
+        root.querySelectorAll("[data-action='price-input']").forEach((input) => {
+          input.addEventListener("change", (event) => {
+            updatePrice(input.dataset.id, event.target.value);
+          });
+          input.addEventListener("blur", (event) => {
+            updatePrice(input.dataset.id, event.target.value);
+          });
+          input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              updatePrice(input.dataset.id, event.target.value);
+              event.target.blur();
+            }
+          });
+        });
+
+        root.querySelectorAll("[data-action='description-input']").forEach((input) => {
+          input.addEventListener("change", (event) => {
+            updateDescription(input.dataset.id, event.target.value);
+          });
+        });
+
+        root.querySelectorAll("[data-action='budget-input']").forEach((input) => {
+          input.addEventListener("change", (event) => {
+            updateBudget(event.target.value);
+          });
+          input.addEventListener("blur", (event) => {
+            updateBudget(event.target.value);
+          });
+        });
+
+        root.querySelectorAll("[data-action='reset-shop']").forEach((button) => {
+          button.addEventListener("click", resetShop);
+        });
+
+        root.querySelectorAll("[data-action='clear-bought']").forEach((button) => {
+          button.addEventListener("click", clearBought);
+        });
+      }
+
+      async function addItem() {
+        const name = state.newItem.trim();
+        if (!name) {
+          return;
+        }
+
+        const newRef = push(itemsRef);
+        await set(newRef, {
+          name,
+          category: state.newCategory,
+          checked: false,
+          selected: false,
+          quantity: 1,
+          price: null,
+          description: "",
+          updatedAt: serverTimestamp()
+        });
+
+        state.newItem = "";
+        state.newCategory = "epicerie";
+        state.showAddPanel = false;
+        render();
+      }
+
+      async function toggleSelected(id) {
+        const item = state.items.find((entry) => entry.id === id);
+        if (!item) {
+          return;
+        }
+        await update(ref(database, `shared-list/items/${id}`), {
+          selected: !item.selected,
+          checked: item.selected ? false : item.checked,
+          updatedAt: serverTimestamp()
+        });
+      }
+
+      async function toggleBought(id) {
+        const item = state.items.find((entry) => entry.id === id);
+        if (!item) {
+          return;
+        }
+        await update(ref(database, `shared-list/items/${id}`), {
+          selected: true,
+          checked: !item.checked,
+          updatedAt: serverTimestamp()
+        });
+      }
+
+      async function deleteItem(id) {
+        const item = state.items.find((entry) => entry.id === id);
+        if (!item) {
+          return;
+        }
+        if (!window.confirm(`Supprimer définitivement "${item.name}" ?`)) {
+          return;
+        }
+        await remove(ref(database, `shared-list/items/${id}`));
+      }
+
+      async function updatePrice(id, rawValue) {
+        const trimmed = String(rawValue).trim().replace(",", ".");
+        if (!trimmed) {
+          await update(ref(database, `shared-list/items/${id}`), {
+            price: null,
+            updatedAt: serverTimestamp()
+          });
+          return;
+        }
+
+        const price = Number(trimmed);
+        if (!Number.isFinite(price) || price < 0) {
+          render();
+          return;
+        }
+
+        await update(ref(database, `shared-list/items/${id}`), {
+          price,
+          selected: true,
+          updatedAt: serverTimestamp()
+        });
+      }
+
+      async function updateQuantity(id, delta) {
+        const item = state.items.find((entry) => entry.id === id);
+        if (!item) {
+          return;
+        }
+
+        const quantity = Math.max(1, item.quantity + delta);
+        if (quantity === item.quantity) {
+          return;
+        }
+
+        if (hasActiveBudget()) {
+          const currentEstimatedTotal = getEstimatedTotal();
+          const currentLineTotal = typeof item.price === "number" && item.selected ? item.price * item.quantity : 0;
+          const nextLineTotal = typeof item.price === "number" && item.selected ? item.price * quantity : 0;
+          const nextEstimatedTotal = currentEstimatedTotal - currentLineTotal + nextLineTotal;
+
+          if (nextEstimatedTotal > state.budget) {
+            window.alert(`Budget dépassé : la quantité de "${item.name}" reste à ${item.quantity}.`);
+            return;
+          }
+        }
+
+        await update(ref(database, `shared-list/items/${id}`), {
+          quantity,
+          updatedAt: serverTimestamp()
+        });
+      }
+
+      async function updateDescription(id, description) {
+        await update(ref(database, `shared-list/items/${id}`), {
+          description: String(description).trim(),
+          updatedAt: serverTimestamp()
+        });
+      }
+
+      async function updateBudget(rawValue) {
+        const trimmed = String(rawValue).trim().replace(",", ".");
+        if (!trimmed) {
+          await update(metaRef, { budget: 0 });
+          return;
+        }
+
+        const budget = Number(trimmed);
+        if (!Number.isFinite(budget) || budget < 0) {
+          render();
+          return;
+        }
+
+        await update(metaRef, { budget });
+      }
+
+      async function resetShop() {
+        if (!window.confirm("Réinitialiser l’estimation, le total, le budget et la sélection en cours ?")) {
+          return;
+        }
+        const updates = {};
+        state.items.forEach((item) => {
+          updates[`${item.id}/selected`] = false;
+          updates[`${item.id}/checked`] = false;
+          updates[`${item.id}/quantity`] = 1;
+          updates[`${item.id}/updatedAt`] = Date.now();
+        });
+
+        if (Object.keys(updates).length > 0) {
+          await update(itemsRef, updates);
+        }
+        await update(metaRef, { budget: 0 });
+      }
+
+      async function clearBought() {
+        const boughtItems = state.items.filter((item) => item.selected && item.checked);
+        if (boughtItems.length === 0) {
+          return;
+        }
+
+        if (!window.confirm("Vider la liste des produits achetés ?")) {
+          return;
+        }
+
+        const updates = {};
+        boughtItems.forEach((item) => {
+          updates[`${item.id}/selected`] = false;
+          updates[`${item.id}/checked`] = false;
+          updates[`${item.id}/quantity`] = 1;
+          updates[`${item.id}/updatedAt`] = Date.now();
+        });
+
+        await update(itemsRef, updates);
+      }
+
+      onValue(
+        listRef,
+        (snapshot) => {
+          const raw = snapshot.val() || {};
+          const rawItems = raw.items || {};
+          state.items = Object.entries(rawItems)
+            .map(([id, item]) => normalizeItem(id, item))
+            .sort((left, right) => {
+              if (left.selected !== right.selected) {
+                return Number(right.selected) - Number(left.selected);
+              }
+              if (left.checked !== right.checked) {
+                return Number(left.checked) - Number(right.checked);
+              }
+              return left.name.localeCompare(right.name, "fr");
+            });
+          state.budget =
+            typeof raw.meta?.budget === "number" && !Number.isNaN(raw.meta.budget)
+              ? raw.meta.budget
+              : 0;
+          const budgetAlertKey =
+            overBudgetKey(state.budget, getEstimatedTotal());
+          if (budgetAlertKey) {
+            if (state.lastBudgetAlertKey !== budgetAlertKey) {
+              state.lastBudgetAlertKey = budgetAlertKey;
+              window.alert(`Budget dépassé : l'estimation dépasse ton budget de ${euro.format(getEstimatedTotal() - state.budget)}.`);
+            }
+          } else {
+            state.lastBudgetAlertKey = "";
+          }
+          state.connected = true;
+          state.syncStatus = "Je t'aime d'un amour sincère ❤️";
+          render();
+        },
+        (error) => {
+          state.connected = false;
+          state.syncStatus = `Erreur : ${error.message}`;
+          render();
+        }
+      );
+
+      function overBudgetKey(budget, estimatedTotal) {
+        if (typeof budget !== "number" || budget <= 0 || estimatedTotal <= budget) {
+          return "";
+        }
+        return `${budget}:${estimatedTotal.toFixed(2)}`;
+      }
+
+      render();
+    </script>
+  </body>
+</html>
